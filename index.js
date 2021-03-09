@@ -26,6 +26,13 @@ const promptUser=() =>{
             name: 'officenumber',
             message: 'Enter your office phone number?',
         },
+       
+                
+    ])
+}
+
+const promptMenu=()=>{
+    return inquirer.prompt([
         {
             type: "list",
             message: "Which license does this project fall under?",
@@ -35,12 +42,34 @@ const promptUser=() =>{
                 "Intern"
             ],
         },
-                
     ])
 }
 
 const promptEngineer =() => {
+    return inquirer.prompt([
+    {
+        type: 'input',
+        name: 'engineer',
+        message: 'What is the engineer name?',
+    },
+    {
+        type: 'input',
+        name: 'engID',
+        message: 'Enter your engineer Id?',
+    },
 
+    {
+        type: 'input',
+        name: 'engemail',
+        message: 'Enter engineer email address?',
+    },
+    {
+
+        type: 'input',
+        name: 'enggit',
+        message: 'Enter engineer GitHub user name?',
+    }
+])
 }
 
 const promptIntern =() => {
