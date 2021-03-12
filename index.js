@@ -1,107 +1,137 @@
 const inquirer=require('inquirer');
 const fs=require('fs');
+const teamMembers=[];
 
 // array of questions for the users
-const promptUser=() =>{
+ const promptManager=() =>{
     return inquirer.prompt([
         {
             type: 'input',
-            name: 'manager',
-            message: 'Enter you team manager name?',
+            name: 'name',
+            message: "What is your manager's name?",
         },
         {
             type: 'input',
             name: 'ID',
-            message: 'Enter your employee Id?',
+            message: "What is your manager's Id?",
         },
 
         {
             type: 'input',
             name: 'email',
-            message: 'Enter your email address?',
+            message: "What is your manager's email?",
         },
+        
         {
-
             type: 'input',
-            name: 'officenumber',
-            message: 'Enter your office phone number?',
+            name: 'officeNumber',
+            message: "What is your manager's office Number?",
         },
+        
        
                 
-    ])
+    ]).then(function (Manager){
+        teamMembers.push(
+            new Manager(Manager.name, Manager.id, Manager.email, Manager.officeNumber)
+        );
+         promptTeamMember();
+    });
 }
 
-const promptMenu=()=>{
+const promptTeamMember=()=>{
     return inquirer.prompt([
         {
             type: "list",
-            message: "Which license does this project fall under?",
-            name: "license",
+            message: "Add team member?",
+            name: "Member",
             choices: [
                 "Engineer",
                 "Intern",
-                "I don't want to add anymore team members",
+                "I'm done. Build HTML"
+                
             ],
         },
-    ])
+    ]).then(empData => {
+                
+        if(empData.Member==="Intern"){
+            
+            promptIntern();
+        } else if (empData.Member==="Engineer"){
+           
+            promptEngineer();
+        }
+    }) else {
+        render (teamMembers);
+    }
 }
 
 const promptEngineer =() => {
     return inquirer.prompt([
-    {
-        type: 'input',
-        name: 'engineer',
-        message: 'What is the engineer name?',
-    },
-    {
-        type: 'input',
-        name: 'engID',
-        message: 'Enter your engineer Id?',
-    },
+        {
+            type: 'input',
+            name: 'name',
+            message: "What is your engineer's name?",
+        },
+        {
+            type: 'input',
+            name: 'ID',
+            message: "What is your engineer's Id?",
+        },
 
-    {
-        type: 'input',
-        name: 'engemail',
-        message: 'Enter engineer email address?',
-    },
+        {
+            type: 'input',
+            name: 'email',
+            message: "What is your engineer's email?",
+        },
     {
 
         type: 'input',
-        name: 'enggit',
-        message: 'Enter engineer GitHub user name?',
-    }
-])
+        name: 'github',
+        message: "What is the engineer's GitHub user name?",
+    },
+    
+]).then(function (Engineer){
+    teamMembers.push(
+        new Engineer(Engineer.name, Engineer.id, Engineer.email, Engineer.github)
+    );
+     promptTeamMember();
+    });
 }
 
 const promptIntern =() => {
     return inquirer.prompt([
         {
             type: 'input',
-            name: 'intern',
-            message: 'What is the Intern name?',
+            name: 'name',
+            message: "What is your intern's name?",
         },
         {
             type: 'input',
-            name: 'intID',
-            message: 'Enter your Intern Id?',
+            name: 'ID',
+            message: "What is your intern's Id?",
         },
-    
+
         {
             type: 'input',
-            name: 'intemail',
-            message: 'Enter Intern email address?',
+            name: 'email',
+            message: "What is your intern's email?",
         },
+        
         {
     
             type: 'input',
             name: 'school',
-            message: 'Enter school name?',
-        }
-    ])
+            message: "Enter school you are currently attending?",
+        },
+        
+    ]).then(function (Intern){
+        teamMembers.push(
+            new Intern(Intern.name, Intern.id, Intern.email, Intern.school)
+        );
+         promptTeamMember();
+
+    })
     
 }
 
-// function to initialize program
-function addMember(){
-    
-}
+
