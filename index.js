@@ -39,7 +39,8 @@ const promptMenu=()=>{
             name: "license",
             choices: [
                 "Engineer",
-                "Intern"
+                "Intern",
+                "I don't want to add anymore team members",
             ],
         },
     ])
@@ -97,5 +98,10 @@ const promptIntern =() => {
             message: 'Enter school name?',
         }
     ])
+    
+}
+
+// function to initialize program
+function addMember(){
     
 }
