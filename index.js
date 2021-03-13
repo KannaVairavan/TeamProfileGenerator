@@ -191,4 +191,8 @@ function buildHTML(teamMember) {
 
 }
 
-
+async function init() {
+    const manager = await promptManager();
+    teamMembers.push(new Manager(manager.name, manager.id, manager.email, manager.officeNumber));
+    promptTeamMember();
+}
