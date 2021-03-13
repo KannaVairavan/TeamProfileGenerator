@@ -1,29 +1,28 @@
 const Manager = require("../lib/Manager");
-descripe("Manager", () =>{
-    // 'set' School Name"
+describe("Manager", () => {
+    // set office number"
     it("Can find office number via constructor", () => {
         const testNumber = "111-111-1111";
-        const Mg = new manager("Joe", 1, "test@test.com", testNumber);
+        const Mg = new Manager("Joe", 1, "test@test.com", testNumber);
         // We expect 'result' to equal to test value' function is working correctly.
-        expect(Mg.school).toBe(testNumber);
+        expect(Mg.officeNumber).toBe(testNumber);
              
       });
 
     //   test title
     it("getRole function should return Manager", () =>{
         const testValue="Manager";
-        const int= new Intern("Joe", 1, "test@test.com", testValue);
-        expect(int.getRole()).toBe(testValue);
+        const Mg= new Manager("Joe", 1, "test@test.com", testValue);
+        expect(Mg.getRole()).toBe(testValue);
     });
     
-    // test school function
-    it("getSchool function should return  school name",()=>{
-        const getOfficeNumber="111-111-1111"
-        const int= new Intern("Mike",2,"mike@test.com",getOfficeNumber);
-        expect(int.getSchool()).toBe(getOfficeNumber);
+    // test Office number function
+    it("getOfficeNumber function should return office phone number",()=>{
+        const testOfficeNumber="111-111-1111"
+        const Mg= new Manager("Mike",2,"mike@test.com",testOfficeNumber);
+        expect(Mg.getOfficeNumber()).toBe(testOfficeNumber);
     });
 
 
 });
   
-})
