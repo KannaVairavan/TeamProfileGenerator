@@ -59,10 +59,12 @@ const promptTeamMember=()=>{
         } else if (empData.Member==="Engineer"){
            
             promptEngineer();
-        }
-    }) else {
-        render (teamMembers);
-    }
+        
+         } else {
+            render (teamMembers);
+         }
+
+    });
 }
 
 const promptEngineer =() => {
@@ -133,5 +135,61 @@ const promptIntern =() => {
     })
     
 }
+
+function buildHTML(teamMember) {
+    return new Promise(function(resolve, reject) {
+        const name = teamMember.getName();
+        const role = teamMember.getRole();
+        const id = teamMember.getId();
+        const email = teamMember.getEmail();
+        let data = "";
+        if (role === "Engineer") {
+            const gitHub = teamMember.getGithub();
+            data = `<div class="col-6">
+            <div class="card mx-auto mb-3" style="width: 18rem">
+            <h5 class="card-header">${name}<br /><br />Engineer</h5>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">ID: ${id}</li>
+                <li class="list-group-item">Email Address: ${email}</li>
+                <li class="list-group-item">GitHub: ${gitHub}</li>
+            </ul>
+            </div>
+        </div>`;
+        } else if (role === "Intern") {
+            const school = teamMember.getSchool();
+            data = `<div class="col-6">
+            <div class="card mx-auto mb-3" style="width: 18rem">
+            <h5 class="card-header">${name}<br /><br />Intern</h5>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">ID: ${id}</li>
+                <li class="list-group-item">Email Address: ${email}</li>
+                <li class="list-group-item">School: ${school}</li>
+            </ul>
+            </div>
+        </div>`;
+        } else {
+            const officePhone = teamMember.getOfficeNumber();
+            data = `<div class="col-6">
+            <div class="card mx-auto mb-3" style="width: 18rem">
+            <h5 class="card-header">${name}<br /><br />Manager</h5>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">ID: ${id}</li>
+                <li class="list-group-item">Email Address: ${email}</li>
+                <li class="list-group-item">Office Phone: ${officePhone}</li>
+            </ul>
+            </div>
+        </div>`
+        }
+        
+        fs.appendFile("./output/teamMember.html", data, function (err) {
+            if (err) {
+                return reject(err);
+            };
+            return resolve();
+        });
+    });
+
+}
+
 
 
