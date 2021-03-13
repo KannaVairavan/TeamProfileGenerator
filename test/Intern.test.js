@@ -1,4 +1,4 @@
-const Engineer = require("../lib/Intern.js");
+const Intern = require("../lib/Intern");
 describe("Intern", () => {
     
 
@@ -19,9 +19,9 @@ describe("Intern", () => {
     });
     
     // test school function
-    it("getSchool function shoult return  school name",()=>{
+    it("getSchool function should return  school name",()=>{
         const testSchoolName="UT Austin"
-        const int=new Intern("Mike",2,"mike@test.com",testSchoolName);
+        const int= new Intern("Mike",2,"mike@test.com",testSchoolName);
         expect(int.getSchool()).toBe(testSchoolName);
     });
 
