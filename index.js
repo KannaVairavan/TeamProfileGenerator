@@ -2,8 +2,20 @@ const inquirer=require('inquirer');
 const fs=require('fs');
 const teamMembers=[];
 
+// Constructors
+
+const Engineer = require("./lib/Engineer");
+const Intern = require("./lib/Intern");
+const Manager = require("./lib/Manager");
+
+async function init() {
+     promptManager();
+    
+}
+
 // array of questions for the users
  const promptManager=() =>{
+
     return inquirer.prompt([
         {
             type: 'input',
@@ -12,7 +24,7 @@ const teamMembers=[];
         },
         {
             type: 'input',
-            name: 'ID',
+            name: 'id',
             message: "What is your manager's Id?",
         },
 
@@ -28,16 +40,18 @@ const teamMembers=[];
             message: "What is your manager's office Number?",
         },
         
-       
-                
-    ]).then(function (Manager){
+                      
+    ]).then((data) => {
         teamMembers.push(
-            new Manager(Manager.name, Manager.id, Manager.email, Manager.officeNumber)
-        );
-         promptTeamMember();
-    });
-}
 
+            new Manager(data.name, data.id, data.email, data.officeNumber, "Manager"));
+
+             promptTeamMember();
+            
+    
+        
+      });
+    }
 const promptTeamMember=()=>{
     return inquirer.prompt([
         {
@@ -61,7 +75,8 @@ const promptTeamMember=()=>{
             promptEngineer();
         
          } else {
-            render (teamMembers);
+             console.log(teamMembers);
+            buildHTML(teamMembers);
          }
 
     });
@@ -76,7 +91,7 @@ const promptEngineer =() => {
         },
         {
             type: 'input',
-            name: 'ID',
+            name: 'id',
             message: "What is your engineer's Id?",
         },
 
@@ -92,9 +107,9 @@ const promptEngineer =() => {
         message: "What is the engineer's GitHub user name?",
     },
     
-]).then(function (Engineer){
+]).then((data) => {
     teamMembers.push(
-        new Engineer(Engineer.name, Engineer.id, Engineer.email, Engineer.github)
+        new Engineer(data.name, data.id, data.email, data.github, "Engineer")
     );
      promptTeamMember();
     });
@@ -109,7 +124,7 @@ const promptIntern =() => {
         },
         {
             type: 'input',
-            name: 'ID',
+            name: 'id',
             message: "What is your intern's Id?",
         },
 
@@ -126,60 +141,67 @@ const promptIntern =() => {
             message: "Enter school you are currently attending?",
         },
         
-    ]).then(function (Intern){
+    ]).then((data) => {
         teamMembers.push(
-            new Intern(Intern.name, Intern.id, Intern.email, Intern.school)
+            new Intern(data.name, data.id, data.email, data.school, "Intern")
         );
          promptTeamMember();
 
     })
-    
-}
+}  
 
 function buildHTML(teamMember) {
     return new Promise(function(resolve, reject) {
-        const name = teamMember.getName();
-        const role = teamMember.getRole();
-        const id = teamMember.getId();
-        const email = teamMember.getEmail();
-        let data = "";
-        if (role === "Engineer") {
-            const gitHub = teamMember.getGithub();
-            data = `<div class="col-6">
-            <div class="card mx-auto mb-3" style="width: 18rem">
-            <h5 class="card-header">${name}<br /><br />Engineer</h5>
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item">ID: ${id}</li>
-                <li class="list-group-item">Email Address: ${email}</li>
-                <li class="list-group-item">GitHub: ${gitHub}</li>
-            </ul>
-            </div>
-        </div>`;
-        } else if (role === "Intern") {
-            const school = teamMember.getSchool();
-            data = `<div class="col-6">
-            <div class="card mx-auto mb-3" style="width: 18rem">
-            <h5 class="card-header">${name}<br /><br />Intern</h5>
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item">ID: ${id}</li>
-                <li class="list-group-item">Email Address: ${email}</li>
-                <li class="list-group-item">School: ${school}</li>
-            </ul>
-            </div>
-        </div>`;
-        } else {
-            const officePhone = teamMember.getOfficeNumber();
-            data = `<div class="col-6">
-            <div class="card mx-auto mb-3" style="width: 18rem">
-            <h5 class="card-header">${name}<br /><br />Manager</h5>
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item">ID: ${id}</li>
-                <li class="list-group-item">Email Address: ${email}</li>
-                <li class="list-group-item">Office Phone: ${officePhone}</li>
-            </ul>
-            </div>
-        </div>`
+
+        for (let i=0; i < teamMember.length; i++){
+
+            const name = teamMember[i].name;
+            const role = teamMember[i].role;
+            const id = teamMember[i].id;
+            const email = teamMember[i].email;
+
+            let data = "";
+            if (role === "Engineer") {
+                const gitHub = teamMember[i].github;
+                data = `<div class="col-6">
+                <div class="card mx-auto mb-3" style="width: 18rem">
+                <h5 class="card-header">${name}<br /><br />Engineer</h5>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">ID: ${id}</li>
+                    <li class="list-group-item">Email Address: ${email}</li>
+                    <li class="list-group-item">GitHub: ${gitHub}</li>
+                </ul>
+                </div>
+            </div>`;
+            } else if (role === "Intern") {
+                const school = teamMember[i].school;
+                data = `<div class="col-6">
+                <div class="card mx-auto mb-3" style="width: 18rem">
+                <h5 class="card-header">${name}<br /><br />Intern</h5>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">ID: ${id}</li>
+                    <li class="list-group-item">Email Address: ${email}</li>
+                    <li class="list-group-item">School: ${school}</li>
+                </ul>
+                </div>
+            </div>`;
+            } else {
+                const officePhone = teamMember[i].officeNumber;
+                data = `<div class="col-6">
+                <div class="card mx-auto mb-3" style="width: 18rem">
+                <h5 class="card-header">${name}<br /><br />Manager</h5>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">ID: ${id}</li>
+                    <li class="list-group-item">Email Address: ${email}</li>
+                    <li class="list-group-item">Office Phone: ${officePhone}</li>
+                </ul>
+                </div>
+            </div>`
+            }
+
+
         }
+        
         
         fs.appendFile("./output/teamMember.html", data, function (err) {
             if (err) {
@@ -187,12 +209,14 @@ function buildHTML(teamMember) {
             };
             return resolve();
         });
+
+        fs.writeFile("./output/teamMember.html", data, function (err) {
+            if (err) throw err;
+            console.log('File is created successfully.');
+        });
     });
 
 }
 
-async function init() {
-    const manager = await promptManager();
-    teamMembers.push(new Manager(manager.name, manager.id, manager.email, manager.officeNumber));
-    promptTeamMember();
-}
+init();
+
