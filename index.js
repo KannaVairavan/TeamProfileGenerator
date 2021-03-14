@@ -8,6 +8,12 @@ const Engineer = require("./lib/Engineer");
 const Intern = require("./lib/Intern");
 const Manager = require("./lib/Manager");
 
+
+const util = require('util');
+
+const readFile = util.promisify(fs.readFile);
+const writeFile = util.promisify(fs.writeFile);
+
 async function init() {
      promptManager();
     
@@ -76,7 +82,7 @@ const promptTeamMember=()=>{
         
          } else {
              console.log(teamMembers);
-            buildHTML(teamMembers);
+             generateHTML();
          }
 
     });
@@ -150,73 +156,57 @@ const promptIntern =() => {
     })
 }  
 
-function buildHTML(teamMember) {
-    return new Promise(function(resolve, reject) {
 
-        for (let i=0; i < teamMember.length; i++){
-
-            const name = teamMember[i].name;
-            const role = teamMember[i].role;
-            const id = teamMember[i].id;
-            const email = teamMember[i].email;
-
-            let data = "";
-            if (role === "Engineer") {
-                const gitHub = teamMember[i].github;
-                data = `<div class="col-6">
-                <div class="card mx-auto mb-3" style="width: 18rem">
-                <h5 class="card-header">${name}<br /><br />Engineer</h5>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">ID: ${id}</li>
-                    <li class="list-group-item">Email Address: ${email}</li>
-                    <li class="list-group-item">GitHub: ${gitHub}</li>
-                </ul>
-                </div>
-            </div>`;
-            } else if (role === "Intern") {
-                const school = teamMember[i].school;
-                data = `<div class="col-6">
-                <div class="card mx-auto mb-3" style="width: 18rem">
-                <h5 class="card-header">${name}<br /><br />Intern</h5>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">ID: ${id}</li>
-                    <li class="list-group-item">Email Address: ${email}</li>
-                    <li class="list-group-item">School: ${school}</li>
-                </ul>
-                </div>
-            </div>`;
-            } else {
-                const officePhone = teamMember[i].officeNumber;
-                data = `<div class="col-6">
-                <div class="card mx-auto mb-3" style="width: 18rem">
-                <h5 class="card-header">${name}<br /><br />Manager</h5>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">ID: ${id}</li>
-                    <li class="list-group-item">Email Address: ${email}</li>
-                    <li class="list-group-item">Office Phone: ${officePhone}</li>
-                </ul>
-                </div>
-            </div>`
-            }
-
-
-        }
-        
-        
-        fs.appendFile("./output/teamMember.html", data, function (err) {
-            if (err) {
-                return reject(err);
-            };
-            return resolve();
-        });
-
-        fs.writeFile("./output/teamMember.html", data, function (err) {
-            if (err) throw err;
-            console.log('File is created successfully.');
-        });
-    });
-
+function getHTMLModule(file) {
+    return readFile(file, "utf8");
 }
+
+async function generateHTML() {
+    let Template = {
+        Main: await getHTMLModule("./templates/main.html"),
+        Manager: await getHTMLModule("./templates/manager.html"),
+        Engineer: await getHTMLModule("./templates/engineer.html"),
+        Intern: await getHTMLModule("./templates/intern.html")
+    }
+
+    let employeesHTML = "";
+
+    for (let employee of teamMembers) {
+        let html = Template[employee.constructor.name]
+        .replace(/{% name %}/gi, employee.name)
+        .replace(/{% id %}/gi, employee.id)
+        .replace(/{% email %}/gi, employee.email);
+        switch (employee.constructor.name) {
+            case "Manager":
+                html = html.replace(/{% officeNumber %}/gi, employee.officeNumber);
+                break;
+            case "Engineer":
+                html = html.replace(/{% github %}/gi, employee.github);
+                break;
+            case "Intern":
+                html = html.replace(/{% school %}/gi, employee.school);
+                break;
+        }
+        employeesHTML += html;
+    }
+    let completeHTML = Template["Main"].replace(/{% employees %}/gi, employeesHTML);
+
+    createHTML(completeHTML);
+}
+
+async function createHTML(html) {
+    console.log("Creating HTML...");
+    let file = `team-member.html`;
+    let dir = "./output";
+    if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir);
+    }
+    await writeFile(`${dir}/${file}`, html);
+    console.log(`HTML has been created to "${dir}/${file}".`);
+    return;
+}
+
+
 
 init();
 
